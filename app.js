@@ -2,6 +2,7 @@ const express = require("express");
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const routes = require('./routes/index');
+const {mongoose} = require('./db/mongoose');
 
 // const errorHandlers = require('./handlers/errorHandlers');
 
@@ -35,4 +36,9 @@ app.use('/', routes);
 // production error handler
 // app.use(errorHandlers.productionErrors);
 
-module.exports = app;
+app.set('port', process.env.PORT || 5555);
+const server = app.listen(app.get('port'), () => {
+  console.log(`Todo api is running → PORT ${server.address().port}`);
+});
+
+module.exports = { app };
