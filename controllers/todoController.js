@@ -35,5 +35,5 @@ exports.getTodosId = (req, res) => {
     res.send({todo});
   }, (err) => {
     res.status(400).send();
-  });
+  }).catch(e => res.status(404).send());
 };
