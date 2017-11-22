@@ -11,12 +11,15 @@ const seedData = [{
   text: 'First test data'
 }, {
   _id: new ObjectID(),
-  text: 'Second test data'
+  text: 'Second test data',
+  completed: true,
+  completedAt: 333
 }, {
   _id: new ObjectID(),  
   text: 'Third test data'
 }];
 
+// remove all records already exist in db and insert new seedData when each test starting
 beforeEach((done) => {
   Todo.remove({}).then(() => {
     return Todo.insertMany(seedData);
@@ -150,4 +153,45 @@ describe('DELETE /todos/id', () => {
       .end(done);
   });
 
+});
+
+describe('PATCH /todos/id', () => {
+
+  it('should update the todo', (done) => {
+    var hexID = seedData[0]._id.toHexString();
+    var text = 'This should be the new text';
+
+    request(app)
+      .patch(`/todos/${hexID}`)
+      .send({
+        completed: true,
+        text
+      })
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.todo.text).toBe(text);
+        expect(res.body.todo.completed).toBe(true);
+        // expect(res.body.todo.completedAt).toBe('number');
+      })
+      .end(done);
+  });
+
+  it('should clear completedAt when todo is not completed', (done) => {
+    var hexID = seedData[1]._id.toHexString();
+    var text = 'This should be the new text second';
+
+    request(app)
+      .patch(`/todos/${hexID}`)
+      .send({
+        completed: false,
+        text
+      })
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.todo.text).toBe(text);
+        expect(res.body.todo.completed).toBe(false);
+        expect(res.body.todo.completedAt).toBeNull();
+      })
+      .end(done);
+  });
 });
