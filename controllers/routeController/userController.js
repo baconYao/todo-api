@@ -1,9 +1,9 @@
 const _ = require('lodash');
 const mongoose = require('mongoose');
-const {User} = require('../models/User');
+const {User} = require('../../models/User');
 const { ObjectID } = require('mongodb');
 
-exports.addUser = (req, res) => {
+const addUser = (req, res) => {
   var body = _.pick(req.body, ['email', 'password']);
   var user = new User(body);
 
@@ -15,3 +15,9 @@ exports.addUser = (req, res) => {
     res.status(400).send(err);
   });
 };
+
+const findMySelf = (req, res) => {
+  res.send(req.user);  
+};
+
+module.exports = { addUser, findMySelf };

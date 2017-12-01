@@ -8,8 +8,7 @@ const {mongoose} = require('./db/mongoose');
 
 // 建立express app
 const app = express();
-
-
+var __base = __dirname;
 
 // 使用cookie parser & body parser middleware
 app.use(cookieParser());

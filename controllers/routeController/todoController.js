@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const mongoose = require('mongoose');
-const Todo = require('../models/Todo');
+const Todo = require('../../models/Todo');
 const { ObjectID } = require('mongodb');
 
 exports.postTodos = (req, res) => {
