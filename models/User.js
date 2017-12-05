@@ -54,6 +54,19 @@ UserSchema.methods.generateAuthToken = function() {
   });
 };
 
+UserSchema.methods.removeToken = function(userToken) {
+  var user = this;
+
+  return user.update({
+    // The $pull operator removes from an existing array all instances of a value or values that match a specified condition.
+    $pull: {
+      tokens: {
+        token: userToken
+      }
+    }
+  })
+};
+
 UserSchema.statics.findByToken = function(token) {
   var User = this;
   var decoded;
@@ -73,6 +86,26 @@ UserSchema.statics.findByToken = function(token) {
     'tokens.token': token,
     'tokens.access': 'auth'
   });
+};
+
+UserSchema.statics.findByCredentials = function(email, password) {
+  var User = this;
+
+  return User.findOne({email}).then((user) => {
+    if(!user) {
+      return Promise.reject("No this user!");
+    }
+
+    return new Promise((resolve, reject) => {
+      bcrypt.compare(password, user.password, (err, res) => {
+        if(res) {
+          resolve(user);
+        } else {
+          reject("Error password");
+        }
+      });
+    });
+  }) 
 };
 
 /* 

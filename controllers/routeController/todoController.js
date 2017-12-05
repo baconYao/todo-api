@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Todo = require('../../models/Todo');
 const { ObjectID } = require('mongodb');
 
-exports.postTodos = (req, res) => {
+exports.post_todos = (req, res) => {
   var todos = new Todo({
     text: req.body.text
   });
@@ -15,7 +15,7 @@ exports.postTodos = (req, res) => {
   });
 };
 
-exports.getTodos = (req, res) => {
+exports.get_todos = (req, res) => {
   Todo.find().then((doc) => {
     res.send({doc});
   }, (err) => {
@@ -23,7 +23,7 @@ exports.getTodos = (req, res) => {
   });
 };
 
-exports.getTodosId = (req, res) => {
+exports.get_todos_id = (req, res) => {
   var id = req.params.id;
   if(!ObjectID.isValid(id)) {
     res.status(404).send();
@@ -39,7 +39,7 @@ exports.getTodosId = (req, res) => {
   }).catch(e => res.status(404).send());
 };
 
-exports.deleteTodosByID = (req, res) => {
+exports.delete_todos_by_id = (req, res) => {
   var id = req.params.id;
   if(!ObjectID.isValid(id)) {
     return res.status(404).send();
@@ -57,7 +57,7 @@ exports.deleteTodosByID = (req, res) => {
 };
 
 
-exports.patchTodosById = (req, res) => {
+exports.patch_todos_by_id = (req, res) => {
   var id = req.params.id;
   var body = _.pick(req.body, ['text', 'completed']);
   if(!ObjectID.isValid(id)) {
