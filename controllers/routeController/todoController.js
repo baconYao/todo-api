@@ -5,7 +5,8 @@ const { ObjectID } = require('mongodb');
 
 exports.post_todos = (req, res) => {
   var todos = new Todo({
-    text: req.body.text
+    text: req.body.text,
+    _creator: req.user._id
   });
 
   todos.save().then((doc) => {
@@ -16,7 +17,9 @@ exports.post_todos = (req, res) => {
 };
 
 exports.get_todos = (req, res) => {
-  Todo.find().then((doc) => {
+  Todo.find({
+    _creator: req.user._id
+  }).then((doc) => {
     res.send({doc});
   }, (err) => {
     res.status(400).send(err);
@@ -24,12 +27,16 @@ exports.get_todos = (req, res) => {
 };
 
 exports.get_todos_id = (req, res) => {
+
   var id = req.params.id;
   if(!ObjectID.isValid(id)) {
     res.status(404).send();
   }
   
-  Todo.findById(id).then((todo) => {
+  Todo.findOne({
+    _id: id,
+    _creator: req.user._id
+  }).then((todo) => {
     if(!todo) {
       res.status(404).send();
     }
@@ -45,7 +52,10 @@ exports.delete_todos_by_id = (req, res) => {
     return res.status(404).send();
   }
 
-  Todo.findByIdAndRemove(id).then((todo) => {
+  Todo.findOneAndRemove({
+    _id: id,
+    _creator: req.user._id
+  }).then((todo) => {
     if(!todo) {
       return res.status(404).send(); 
     }
@@ -71,7 +81,12 @@ exports.patch_todos_by_id = (req, res) => {
     body.completedAt = null;
   }
 
-  Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
+  Todo.findOneAndUpdate({
+    _id: id,
+    _creator: req.user._id
+  }, 
+    {$set: body}, {new: true})
+    .then((todo) => {
     if(!todo) {
       return res.status(404).send();
     }

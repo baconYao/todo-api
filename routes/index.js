@@ -6,11 +6,22 @@ const todoController = require("../controllers/routeController/todoController");
 const userController = require("../controllers/routeController/userController");
 
 
-router.post('/todos', todoController.post_todos);
-router.get('/todos', todoController.get_todos);
-router.get('/todos/:id', todoController.get_todos_id);
-router.delete('/todos/:id', todoController.delete_todos_by_id);
-router.patch('/todos/:id', todoController.patch_todos_by_id);
+router.post('/todos', authenticate,
+                      todoController.post_todos
+);
+router.get('/todos',  authenticate,
+                      todoController.get_todos
+);
+router.get('/todos/:id', authenticate,
+                         todoController.get_todos_id
+);
+
+router.delete('/todos/:id', authenticate,
+                            todoController.delete_todos_by_id
+);
+router.patch('/todos/:id', authenticate,
+                           todoController.patch_todos_by_id
+);
 
 router.post('/users', userController.add_user);
 
